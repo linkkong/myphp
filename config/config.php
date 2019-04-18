@@ -6,7 +6,7 @@ $config['db']['password'] = 'root';
 $config['db']['dbname'] = 'project';
 
 // 默认控制器和操作名
-$config['defaultController'] = 'Home';
+$config['defaultController'] = 'home';
 $config['defaultAction'] = 'index';
 
 return $config;

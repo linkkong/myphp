@@ -9,6 +9,7 @@ class MyPHP
 {
     /**
      * 配置
+     *
      * @var array
      */
     protected $config = [];
@@ -67,12 +68,13 @@ class MyPHP
         }
         $dispatch = new $controller($controllerName, $actionName);
 //        $dispatch->$actionName($params);
-
+        
         call_user_func_array(array($dispatch, $actionName), $params); //控制器内用func_get_args可以接收传的参数
     }
 
     /**
      * 自动加载类
+     *
      * @param $className
      */
     public function loadClass($className)
@@ -96,6 +98,7 @@ class MyPHP
 
     /**
      * 内核文件命名空间映射关系
+     *
      * @return array
      */
     protected function classMap()
@@ -135,7 +138,9 @@ class MyPHP
 
     /**
      * 过滤敏感字符串
+     *
      * @param $value
+     *
      * @return array|string
      */
     public function stripSlashesDeep($value)
