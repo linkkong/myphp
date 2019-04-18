@@ -23,6 +23,7 @@ class MyPHP
     {
         spl_autoload_register(array($this, 'loadClass'));
 
+        $this->setDbConfig();
         $this->setErrorReporting();
         $this->unregisterGlobals();
         $this->removeMagicQuotes();
@@ -35,7 +36,7 @@ class MyPHP
      */
     public function route()
     {
-        $controllerName = $this->config['defaultController'];
+        $controllerName = ucfirst($this->config['defaultController']);
         $actionName = $this->config['defaultAction'];
         parse_str($_SERVER['QUERY_STRING'], $params);
 
@@ -68,7 +69,7 @@ class MyPHP
         }
         $dispatch = new $controller($controllerName, $actionName);
 //        $dispatch->$actionName($params);
-        
+
         call_user_func_array(array($dispatch, $actionName), $params); //控制器内用func_get_args可以接收传的参数
     }
 
@@ -166,6 +167,8 @@ class MyPHP
     public function setDbConfig()
     {
         if ($this->config['db']) {
+            define('DB_CONNECTION', $this->config['db']['connection']);
+
             define('DB_HOST', $this->config['db']['host']);
             define('DB_NAME', $this->config['db']['dbname']);
             define('DB_USER', $this->config['db']['username']);
