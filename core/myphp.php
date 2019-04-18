@@ -21,14 +21,22 @@ class MyPHP
     public function run()
     {
         spl_autoload_register(array($this, 'loadClass'));
+
+        $this->setErrorReporting();
+        $this->unregisterGlobals();
+        $this->removeMagicQuotes();
+
         $this->route();
     }
 
+    /**
+     * 设置路由
+     */
     public function route()
     {
         $controllerName = $this->config['defaultController'];
         $actionName = $this->config['defaultAction'];
-        $params = [];
+        parse_str($_SERVER['QUERY_STRING'], $params);
 
         $url = $_SERVER['REQUEST_URI'];
         $position = strpos($url, '?');
@@ -54,9 +62,19 @@ class MyPHP
         if (!class_exists($controller)) {
             exit($controller . '控制器不存在');
         }
+        if (!method_exists($controller, $actionName)) {
+            exit($actionName . "方法不存在");
+        }
+        $dispatch = new $controller($controllerName, $actionName);
+//        $dispatch->$actionName($params);
 
+        call_user_func_array(array($dispatch, $actionName), $params); //控制器内用func_get_args可以接收传的参数
     }
 
+    /**
+     * 自动加载类
+     * @param $className
+     */
     public function loadClass($className)
     {
         $classMap = $this->classMap();
@@ -76,16 +94,78 @@ class MyPHP
         include $file;
     }
 
-    // 内核文件命名空间映射关系
+    /**
+     * 内核文件命名空间映射关系
+     * @return array
+     */
     protected function classMap()
     {
         return [
-            'fastphp\base\Controller' => CORE_PATH . '/base/Controller.php',
-            'fastphp\base\Model' => CORE_PATH . '/base/Model.php',
-            'fastphp\base\View' => CORE_PATH . '/base/View.php',
-            'fastphp\db\Db' => CORE_PATH . '/db/Db.php',
-            'fastphp\db\Sql' => CORE_PATH . '/db/Sql.php',
+
         ];
+    }
+
+    /**
+     * 设置报错级别
+     */
+    public function setErrorReporting()
+    {
+        if (APP_DEBUG === true) {
+            error_reporting(E_ALL);
+            ini_set("display_errors", "On");
+        } else {
+            error_reporting(E_ALL);
+            ini_set("display_errors", 'Off');
+            ini_set('log_errors', "On");
+        }
+    }
+
+    /**
+     * 检测并移除非法字符串
+     */
+    public function removeMagicQuotes()
+    {
+        if (get_magic_quotes_gpc()) {
+            $_GET = isset($_GET) ? $this->stripSlashesDeep($_GET) : "";
+            $_POST = isset($_POST) ? $this->stripSlashesDeep($_POST) : '';
+            $_COOKIE = isset($_COOKIE) ? $this->stripSlashesDeep($_COOKIE) : '';
+            $_SESSION = isset($_SESSION) ? $this->stripSlashesDeep($_SESSION) : '';
+        }
+    }
+
+    /**
+     * 过滤敏感字符串
+     * @param $value
+     * @return array|string
+     */
+    public function stripSlashesDeep($value)
+    {
+        return is_array($value) ? array_map(array($this, 'stripSlashesDeep'), $value) : stripslashes($value);
+    }
+
+    /**
+     * 检测自定义全局变量并移除
+     */
+    public function unregisterGlobals()
+    {
+        if (ini_get("register_globals")) {
+            $arrays = ['_SESSION', '_POST', '_GET', '_COOKIE', '_REQUEST', '_SERVER', '_ENV', '_FILES'];
+            $allArrays = array_keys($GLOBALS);
+            $diff = array_diff($allArrays, $arrays);
+            array_map(function ($value) {
+                unset($GLOBALS[$value]);
+            }, $diff);
+        }
+    }
+
+    public function setDbConfig()
+    {
+        if ($this->config['db']) {
+            define('DB_HOST', $this->config['db']['host']);
+            define('DB_NAME', $this->config['db']['dbname']);
+            define('DB_USER', $this->config['db']['username']);
+            define('DB_PASS', $this->config['db']['password']);
+        }
     }
 
 }
