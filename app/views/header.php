@@ -25,9 +25,10 @@
             <a class="navbar-brand" href="/">Mxc的框架</a>
         </div>
         <div id="navbar" class="collapse navbar-collapse">
-            <form class="navbar-form navbar-right" method="get">
+            <form class="navbar-form navbar-right" method="get" action="/">
                 <div class="form-group">
-                    <input type="text" placeholder="搜索内容" class="form-control">
+                    <input type="text" name="keyword" value="<?php echo $_GET['keyword'] ?? "" ?>" placeholder="搜索内容"
+                           class="form-control">
                 </div>
                 <button type="submit" class="btn btn-success">搜索</button>
             </form>

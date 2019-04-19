@@ -14,8 +14,8 @@
                 <td><?php echo $item['id'] ?></td>
                 <td><?php echo $item['item_name'] ?></td>
                 <td>
-                    <a href="/item/manage/<?php echo $item['id'] ?>">编辑</a>
-                    <a href="/item/delete/<?php echo $item['id'] ?>">删除</a>
+                    <a href="/home/edit/<?php echo $item['id'] ?>">编辑</a>
+                    <a href="/home/delete/<?php echo $item['id'] ?>">删除</a>
                 </td>
             </tr>
         <?php endforeach ?>

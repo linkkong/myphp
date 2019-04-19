@@ -24,8 +24,78 @@ class HomeController extends Controller
         $this->render();
     }
 
+    /**
+     * 新增页面
+     */
     public function create()
     {
         $this->render();
+    }
+
+    /**
+     * 保存页面
+     */
+    public function store()
+    {
+        $data['item_name'] = $_POST['item_name'] ?? "";
+        $count = (new ItemModel)->add($data);
+
+        $this->toIndex();
+    }
+
+    /**
+     * 编辑页面
+     *
+     * @param $id
+     */
+    public function edit($id)
+    {
+        $this->assign('id', $id);
+
+        $detail = $this->detail($id);
+
+        $this->assign('detail', $detail);
+
+        $this->render();
+    }
+
+    // 查看单条记录详情
+    public function detail($id)
+    {
+        // 通过?占位符传入$id参数
+        return (new ItemModel())->where(["id = ?"], [$id])->fetch();
+    }
+
+    /**
+     * 保存修改
+     *
+     * @param $id
+     */
+    public function update($id)
+    {
+        $data = array('id' => $id, 'item_name' => $_POST['item_name']);
+        (new ItemModel)->where(['id = :id'], [':id' => $data['id']])->update($data);
+
+        $this->toIndex();
+    }
+
+    /**
+     * 删除
+     *
+     * @param $id
+     */
+    public function delete($id)
+    {
+        (new ItemModel)->delete($id);
+        $this->toIndex();
+    }
+
+    /**
+     * 跳转首页
+     */
+    public function toIndex()
+    {
+        header("Location: //a.vipx.de");
+        exit();
     }
 }

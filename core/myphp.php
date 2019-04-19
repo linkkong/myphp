@@ -38,7 +38,7 @@ class MyPHP
     {
         $controllerName = ucfirst($this->config['defaultController']);
         $actionName = $this->config['defaultAction'];
-        parse_str($_SERVER['QUERY_STRING'], $params);
+        $params = [];
 
         $url = $_SERVER['REQUEST_URI'];
         $position = strpos($url, '?');
@@ -57,6 +57,8 @@ class MyPHP
 
             // 获取动作名
             $actionName = $urlArray ? $urlArray[0] : $actionName;
+            array_shift($urlArray);
+            $params = $urlArray;
         }
 
         //判断控制器和操作是否存在
@@ -69,7 +71,7 @@ class MyPHP
         }
         $dispatch = new $controller($controllerName, $actionName);
 //        $dispatch->$actionName($params);
-
+        
         call_user_func_array(array($dispatch, $actionName), $params); //控制器内用func_get_args可以接收传的参数
     }
 
