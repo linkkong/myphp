@@ -8,7 +8,10 @@
     <meta name="author" content="">
     <title><?php echo $title ?? "标题" ?></title>
     <link href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
-
+    <link href="https://cdn.bootcss.com/layer/2.3/skin/layer.css" rel="stylesheet">
+    <?php if ($isChat ?? false) { ?>
+        <link href="/chat/style.css" rel="stylesheet">
+    <?php } ?>
 </head>
 
 <body>
@@ -35,6 +38,8 @@
             <ul class="nav navbar-nav">
                 <li class="<?php echo $_SERVER['REQUEST_URI'] == "/home/create" ? "active" : "" ?>"><a
                             href="/home/create">新增</a></li>
+                <li class="<?php echo $_SERVER['REQUEST_URI'] == "/chat/index" ? "active" : "" ?>"><a
+                            href="/chat/index">聊天室</a></li>
             </ul>
         </div><!-- /.nav-collapse -->
     </div><!-- /.container -->
