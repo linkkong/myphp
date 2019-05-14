@@ -33,7 +33,7 @@ let webim = {
     },
     messages: function () {
         this.data.wsServer.onmessage = function (evt) {
-            var data = jQuery.parseJSON(evt.data);
+            let data = jQuery.parseJSON(evt.data);
             switch (data.type) {
                 case 'open':
                     webim.appendUser(data.user.name, data.user.avatar, data.user.fd);
@@ -68,16 +68,16 @@ let webim = {
     },
     sendMsg: function () {
 
-        var text = $(".message .text textarea");
-        var msg = text.val();
-        if ($.trim(msg) == '') {
+        let text = $(".message .text textarea");
+        let msg = text.val();
+        if ($.trim(msg) === '') {
             this.layerErrorMsg('请输入消息内容');
             return false;
         }
 
         this.data.wsServer.send(msg);
 
-        var html = '<div class="col-xs-10 col-xs-offset-2 msg-item ">'
+        let html = '<div class="col-xs-10 col-xs-offset-2 msg-item ">'
             + '<div class="col-xs-1 no-padding pull-right">'
             + '<div class="avatar">'
             + '<img src="' + this.data.info.avatar + '" width="50" height="50" class="img-circle">'
@@ -123,10 +123,11 @@ let webim = {
         this.scrollBottom();
     },
     scrollBottom: function () {
-        $('.chat-list').scrollTop($('.chat-list')[0].scrollHeight);
+        let chat_list = $('.chat-list');
+        chat_list.scrollTop(chat_list[0].scrollHeight);
     },
     notice: function (msg) {
-        var html = '<div class="col-xs-12 notice text-center">' + msg + '</div>';
+        let html = '<div class="col-xs-12 notice text-center">' + msg + '</div>';
         $('.chat-list').append(html);
 
         this.scrollBottom();
@@ -135,15 +136,17 @@ let webim = {
         if ($(".fd-" + fd).length > 0) {
             return true;
         }
-        var html = ' <div class="user-item fd-' + fd + '">'
+        let html = '<div class="user-item fd-' + fd + '">'
             + '<div class="avatar">'
             + '<img src="' + avatar + '" width="50" height="50" class="img-circle">'
             + '</div>'
             + '<div class="user-name">' + name + '</div>'
             + '</div>';
 
-        $(".user-list").append(html);
-        $('.user-list').scrollTop($('.user-list')[0].scrollHeight);
+        let user_list = $('.user-list');
+
+        user_list.append(html);
+        user_list.scrollTop(user_list[0].scrollHeight);
     },
     layerSuccessMsg: function (msg) {
         layer.msg(msg, {time: 1000, icon: 6});
